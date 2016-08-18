@@ -12,17 +12,38 @@
 <script src="https://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false&ext=.js&key=AIzaSyCphiTlRchlYeuP0D5S1uv5qgnumCXhDkY"></script>
 
     
+<style>
+html, body {
+    width: 100%;
+    height: 100%;
+}
 
+#map {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+#latlong {
+    z-index: 10;
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    width: 390px;
+    background-color: black;
+    color: #FFF;
+    opacity:.7;
+}
+</style>
   </head>
   <body>
       
       
-<div id="map" style="width: 1030px; height: 600px">
+<div id="map">
 </div>
-<div id="latlong">
+<textarea id="latlong" rows=3>
 
-</div>
-
+</textarea>
 
       <script type="text/javascript">
         var polygon;
@@ -80,13 +101,14 @@
           var sw = bounds.getSouthWest();
           var ne = bounds.getNorthEast();
           for (var i = 0; i < 100; i++) {
+              var html ="";
             var ptLat = Math.random() * (ne.lat() - sw.lat()) + sw.lat();
             var ptLng = Math.random() * (ne.lng() - sw.lng()) + sw.lng();
             var point = new google.maps.LatLng(ptLat, ptLng);
             if (google.maps.geometry.poly.containsLocation(point, polygon)) {
               createMarker(map, point, "marker " + i);
-              $('#latlong').append('<br>'+ptLat + ', ' + ptLng)
-                // break;
+              html = $('#latlong').html();
+              $('#latlong').html(html+ptLat + ', ' + ptLng+'\n')
             }
           }
         }
@@ -129,10 +151,22 @@
               }
         google.maps.event.addDomListener(window, 'load', initialize);
 
+        $('#latlong').on("focus keyup", function(e){
 
-        function copyToClipboard(text) {
-          window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
+        var keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+        if(keycode === 9 || !keycode){
+            // Hacemos select
+            var $this = $(this);
+            $this.select();
+
+            // Para Chrome's que da problema
+            $this.on("mouseup", function() {
+                // Unbindeamos el mouseup
+                $this.off("mouseup");
+                return false;
+            });
         }
+    });
       </script>
 
     
