@@ -9,6 +9,7 @@
     
     
 <script   src="https://code.jquery.com/jquery-3.1.0.slim.min.js"   integrity="sha256-cRpWjoSOw5KcyIOaZNo4i6fZ9tKPhYYb6i5T9RSVJG8="   crossorigin="anonymous"></script>
+<!--><script src="https://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false&ext=.js"></script>-->
 <script src="https://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false&ext=.js&key=AIzaSyCphiTlRchlYeuP0D5S1uv5qgnumCXhDkY"></script>
 
     
@@ -53,19 +54,15 @@ html, body {
         function initialize() {
           var map = new google.maps.Map(document.getElementById("map"), {
             zoom: 3,
-            center: new google.maps.LatLng(22.7964, 79.8456),
+            center: new google.maps.LatLng(39.25034,-99.15273),
             mapTypeId: google.maps.MapTypeId.HYBRID
           });
-
-          var coords = [
-            new google.maps.LatLng(18.979026, 72.949219), //Mumbai
-            new google.maps.LatLng(28.613459, 77.255859), //Delhi
-            new google.maps.LatLng(22.512557, 88.417969), //Kolkata
-            new google.maps.LatLng(12.940322, 77.607422) //Bengaluru
-          ];
+          
+          var triangleCoords = [new google.maps.LatLng(48.86065,-98.49046), new google.maps.LatLng(31.59843,-111.10585), new google.maps.LatLng(35.20552,-77.05407), 
+                  ];
 
           polygon = new google.maps.Polygon({
-            paths: coords,
+            paths: triangleCoords,
             strokeColor: "#0000FF",
             strokeOpacity: 0.8,
             strokeWeight: 2,
