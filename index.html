@@ -51,7 +51,8 @@
             mapTypeId: google.maps.MapTypeId.HYBRID
           });
           
-          var triangleCoords = [new google.maps.LatLng(48.86065,-98.49046), new google.maps.LatLng(31.59843,-111.10585), new google.maps.LatLng(35.20552,-77.05407), 
+          var triangleCoords = [
+              new google.maps.LatLng(48.86065,-98.49046), new google.maps.LatLng(31.59843,-111.10585), new google.maps.LatLng(35.20552,-77.05407), 
                   ];
 
           polygon = new google.maps.Polygon({
@@ -60,19 +61,19 @@
             strokeOpacity: 0.8,
             strokeWeight: 2,
             fillColor: "#0000FF",
-            fillOpacity: 0.26,
-            draggable: true, // turn off if it gets annoying
+            fillOpacity: 0.25,
+            draggable: true, 
             editable: true,
           });
 
           polygon.setMap(map);
+          
           addpoints(map);
 
 
           google.maps.event.addListener(polygon.getPath(), "insert_at", function(e) {
             addpoints(map);
           });
-          //google.maps.event.addListener(myPolygon.getPath(), "remove_at", getPolygonCoords);
           google.maps.event.addListener(polygon.getPath(), "set_at", function(e) {
             addpoints(map);
           });
@@ -83,38 +84,39 @@
 
                 setMapOnAll(null);
                 $('#latlong').html('');
-          var bounds = new google.maps.LatLngBounds();
-
-          for (var i = 0; i < polygon.getPath().getLength(); i++) {
-            bounds.extend(polygon.getPath().getAt(i));
-          }
-          var sw = bounds.getSouthWest();
-          var ne = bounds.getNorthEast();
-          for (var i = 0; i < 100; i++) {
-              var html ="";
-            var ptLat = Math.random() * (ne.lat() - sw.lat()) + sw.lat();
-            var ptLng = Math.random() * (ne.lng() - sw.lng()) + sw.lng();
-            var point = new google.maps.LatLng(ptLat, ptLng);
-            if (google.maps.geometry.poly.containsLocation(point, polygon)) {
-              createMarker(map, point, "marker " + i);
-              html = $('#latlong').html();
-              $('#latlong').html(html+ptLat + ', ' + ptLng+'\n')
-            }
-          }
+                
+                var bounds = new google.maps.LatLngBounds();
+                
+                for (var i = 0; i < polygon.getPath().getLength(); i++) {
+                  bounds.extend(polygon.getPath().getAt(i));
+                }
+                var sw = bounds.getSouthWest();
+                var ne = bounds.getNorthEast();
+                for (var i = 0; i < 100; i++) {
+                    var html ="";
+                  var ptLat = Math.random() * (ne.lat() - sw.lat()) + sw.lat();
+                  var ptLng = Math.random() * (ne.lng() - sw.lng()) + sw.lng();
+                  var point = new google.maps.LatLng(ptLat, ptLng);
+                  if (google.maps.geometry.poly.containsLocation(point, polygon)) {
+                    createMarker(map, point, "marker " + i);
+                    html = $('#latlong').html();
+                    $('#latlong').html(html+ptLat + ', ' + ptLng+'\n')
+                  }
+                }
         }
 
         function createMarker(map, point, content) {
-          var marker = new google.maps.Marker({
-            position: point,
-            map: map
-          });
-  
+                var marker = new google.maps.Marker({
+                  position: point,
+                  map: map
+                });
+                
                 markers.push(marker);
-          google.maps.event.addListener(marker, "click", function(evt) {
-            infowindow.setContent(content + "<br>" + marker.getPosition().toUrlValue(6));
-            infowindow.open(map, marker);
-          });
-          return marker;
+                google.maps.event.addListener(marker, "click", function(evt) {
+                  infowindow.setContent(marker.getPosition().toUrlValue(6));
+                  infowindow.open(map, marker);
+                });
+                return marker;
         }
 
            // Sets the map on all markers in the array.
@@ -139,19 +141,17 @@
                 clearMarkers();
                 markers = [];
               }
+              
+              
         google.maps.event.addDomListener(window, 'load', initialize);
 
         $('#latlong').on("focus keyup", function(e){
 
         var keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
         if(keycode === 9 || !keycode){
-            // Hacemos select
             var $this = $(this);
             $this.select();
-
-            // Para Chrome's que da problema
             $this.on("mouseup", function() {
-                // Unbindeamos el mouseup
                 $this.off("mouseup");
                 return false;
             });
