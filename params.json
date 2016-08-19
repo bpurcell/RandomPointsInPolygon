@@ -1,0 +1,6 @@
+{
+  "name": "Random Points in a Polygon",
+  "tagline": "",
+  "body": "### Random Points in a Polygon\r\nThis page servers as an example of how to get random coordinate points from within any polygon.  Just draw your polygon and copy the textarea for the Latitude and Longitude\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}

@@ -1,172 +1,44 @@
-
-<!DOCTYPE HTML>
-
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta http-equiv="edit-Type" edit="text/html; charset=utf-8">
-    
-    
-<script   src="https://code.jquery.com/jquery-3.1.0.slim.min.js"   integrity="sha256-cRpWjoSOw5KcyIOaZNo4i6fZ9tKPhYYb6i5T9RSVJG8="   crossorigin="anonymous"></script>
-<!--><script src="https://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false&ext=.js"></script>-->
-<script src="https://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false&ext=.js&key=AIzaSyCphiTlRchlYeuP0D5S1uv5qgnumCXhDkY"></script>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Random Points in a Polygon by bpurcell</title>
 
-    
-<style>
-html, body {
-    width: 100%;
-    height: 100%;
-}
-
-#map {
-    width: 100%;
-    height: 100%;
-    position: relative;
-}
-
-#latlong {
-    z-index: 10;
-    position: absolute;
-    top: 50px;
-    left: 50px;
-    width: 390px;
-    background-color: black;
-    color: #FFF;
-    opacity:.7;
-}
-</style>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
   <body>
-      
-      
-<div id="map">
-</div>
-<textarea id="latlong" rows=3>
+    <div class="wrapper">
+      <header>
+        <h1>Random Points in a Polygon</h1>
+        <p></p>
 
-</textarea>
-
-      <script type="text/javascript">
-        var polygon;
-        var infowindow = new google.maps.InfoWindow({});
-        var markers = [];
-      
-        function initialize() {
-          var map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 3,
-            center: new google.maps.LatLng(39.25034,-99.15273),
-            mapTypeId: google.maps.MapTypeId.HYBRID
-          });
-          
-          var triangleCoords = [new google.maps.LatLng(48.86065,-98.49046), new google.maps.LatLng(31.59843,-111.10585), new google.maps.LatLng(35.20552,-77.05407), 
-                  ];
-
-          polygon = new google.maps.Polygon({
-            paths: triangleCoords,
-            strokeColor: "#0000FF",
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: "#0000FF",
-            fillOpacity: 0.26,
-            draggable: true, // turn off if it gets annoying
-            editable: true,
-          });
-
-          polygon.setMap(map);
-          addpoints(map);
+        <p class="view"><a href="https://github.com/bpurcell/RandomPointsInPolygon">View the Project on GitHub <small>bpurcell/RandomPointsInPolygon</small></a></p>
 
 
-          google.maps.event.addListener(polygon.getPath(), "insert_at", function(e) {
-            addpoints(map);
-          });
-          //google.maps.event.addListener(myPolygon.getPath(), "remove_at", getPolygonCoords);
-          google.maps.event.addListener(polygon.getPath(), "set_at", function(e) {
-            addpoints(map);
-          });
+        <ul>
+          <li><a href="https://github.com/bpurcell/RandomPointsInPolygon/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/bpurcell/RandomPointsInPolygon/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/bpurcell/RandomPointsInPolygon">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h3>
+<a id="random-points-in-a-polygon" class="anchor" href="#random-points-in-a-polygon" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Random Points in a Polygon</h3>
 
-        }
-
-        function addpoints(map) {
-
-                setMapOnAll(null);
-                $('#latlong').html('');
-          var bounds = new google.maps.LatLngBounds();
-
-          for (var i = 0; i < polygon.getPath().getLength(); i++) {
-            bounds.extend(polygon.getPath().getAt(i));
-          }
-          var sw = bounds.getSouthWest();
-          var ne = bounds.getNorthEast();
-          for (var i = 0; i < 100; i++) {
-              var html ="";
-            var ptLat = Math.random() * (ne.lat() - sw.lat()) + sw.lat();
-            var ptLng = Math.random() * (ne.lng() - sw.lng()) + sw.lng();
-            var point = new google.maps.LatLng(ptLat, ptLng);
-            if (google.maps.geometry.poly.containsLocation(point, polygon)) {
-              createMarker(map, point, "marker " + i);
-              html = $('#latlong').html();
-              $('#latlong').html(html+ptLat + ', ' + ptLng+'\n')
-            }
-          }
-        }
-
-        function createMarker(map, point, content) {
-          var marker = new google.maps.Marker({
-            position: point,
-            map: map
-          });
-  
-                markers.push(marker);
-          google.maps.event.addListener(marker, "click", function(evt) {
-            infowindow.setContent(content + "<br>" + marker.getPosition().toUrlValue(6));
-            infowindow.open(map, marker);
-          });
-          return marker;
-        }
-
-           // Sets the map on all markers in the array.
-              function setMapOnAll(map) {
-                for (var i = 0; i < markers.length; i++) {
-                  markers[i].setMap(map);
-                }
-              }
-
-              // Removes the markers from the map, but keeps them in the array.
-              function clearMarkers() {
-                setMapOnAll(null);
-              }
-
-              // Shows any markers currently in the array.
-              function showMarkers() {
-                setMapOnAll(map);
-              }
-
-              // Deletes all markers in the array by removing references to them.
-              function deleteMarkers() {
-                clearMarkers();
-                markers = [];
-              }
-        google.maps.event.addDomListener(window, 'load', initialize);
-
-        $('#latlong').on("focus keyup", function(e){
-
-        var keycode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
-        if(keycode === 9 || !keycode){
-            // Hacemos select
-            var $this = $(this);
-            $this.select();
-
-            // Para Chrome's que da problema
-            $this.on("mouseup", function() {
-                // Unbindeamos el mouseup
-                $this.off("mouseup");
-                return false;
-            });
-        }
-    });
-      </script>
-
+<p>This page servers as an example of how to get random coordinate points from within any polygon.  Just draw your polygon and copy the textarea for the Latitude and Longitude</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/bpurcell">bpurcell</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
     
-
   </body>
 </html>
