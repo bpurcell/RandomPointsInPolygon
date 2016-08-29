@@ -10,8 +10,11 @@
     <meta name="viewport" content="width=device-width">
     
     
-    <script   src="https://code.jquery.com/jquery-3.1.0.slim.min.js"   integrity="sha256-cRpWjoSOw5KcyIOaZNo4i6fZ9tKPhYYb6i5T9RSVJG8="   crossorigin="anonymous"></script>
-    <!--<script src="https://maps.googleapis.com/maps/api/js?libraries=geometry&ext=.js"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?libraries=geometry,drawing&ext=.js"></script> -->
+
+    
+    <script src="states.json"></script>
 
    <script src="https://maps.googleapis.com/maps/api/js?libraries=geometry&ext=.js&key=AIzaSyCphiTlRchlYeuP0D5S1uv5qgnumCXhDkY"></script>
     
@@ -30,6 +33,7 @@
     <h1>Random Points in a Polygon</h1>
     <p>This page servers as an example of how to get random coordinate points from within any polygon.  Just draw your polygon and copy the textarea for the Latitude and Longitude pairs.</p>
     <p class="view"><a href="https://github.com/bpurcell/RandomPointsInPolygon">View the Project on GitHub <small>by Bennington Purcell</small></a></p>
+    
     <div id="inputrow">
         <textarea id="latlong" rows=3></textarea>
         <button class="btn" data-clipboard-target="#latlong">
@@ -39,44 +43,68 @@
 </div>
 
       <script type="text/javascript">
-    new Clipboard('.btn');
+        new Clipboard('.btn');
         var polygon;
         var infowindow = new google.maps.InfoWindow({});
         var markers = [];
+         var map;
+        
+        
+        function add_json() {
+            var s = $('<select />');
+            s.attr('id', 'statesjson');
+            $('<option />', {value: '', text: 'Select to load'}).appendTo(s);
+            
+            $.each( states, function( key, value ) {
+               $('<option />', {value: key, text: value.name}).appendTo(s);
+            });
+
+            s.appendTo('#info'); 
+            
+            
+            $( "#statesjson" ).change(function() {
+                var obj = jQuery.parseJSON(states[this.value].geojson );
+
+                console.log(obj);
+                map.data.addGeoJson(obj)
+            });
+        }
       
         function initialize() {
-          var map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 3,
-            center: new google.maps.LatLng(39.25034,-99.15273),
-            mapTypeId: google.maps.MapTypeId.HYBRID
-          });
-          
-          var triangleCoords = [
-              new google.maps.LatLng(48.86065,-98.49046), new google.maps.LatLng(31.59843,-111.10585), new google.maps.LatLng(35.20552,-77.05407), 
-                  ];
-
-          polygon = new google.maps.Polygon({
-            paths: triangleCoords,
-            strokeColor: "#0000FF",
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: "#0000FF",
-            fillOpacity: 0.25,
-            draggable: true, 
-            editable: true,
-          });
-
-          polygon.setMap(map);
-          
-          addpoints(map);
-
-
-          google.maps.event.addListener(polygon.getPath(), "insert_at", function(e) {
+            add_json();
+            
+             map = new google.maps.Map(document.getElementById("map"), {
+              zoom: 3,
+              center: new google.maps.LatLng(39.25034,-99.15273),
+              mapTypeId: google.maps.MapTypeId.HYBRID
+            });
+            
+            var triangleCoords = [
+                new google.maps.LatLng(48.86065,-98.49046), new google.maps.LatLng(31.59843,-111.10585), new google.maps.LatLng(35.20552,-77.05407), 
+                    ];
+              
+            polygon = new google.maps.Polygon({
+              paths: triangleCoords,
+              strokeColor: "#0000FF",
+              strokeOpacity: 0.8,
+              strokeWeight: 2,
+              fillColor: "#0000FF",
+              fillOpacity: 0.25,
+              draggable: true, 
+              editable: true,
+            });
+              
+            polygon.setMap(map);
+            
             addpoints(map);
-          });
-          google.maps.event.addListener(polygon.getPath(), "set_at", function(e) {
-            addpoints(map);
-          });
+              
+              
+            google.maps.event.addListener(polygon.getPath(), "insert_at", function(e) {
+              addpoints(map);
+            });
+            google.maps.event.addListener(polygon.getPath(), "set_at", function(e) {
+              addpoints(map);
+            });
 
         }
 
